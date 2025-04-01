@@ -23,31 +23,7 @@ Install dependencies from the `requirements.txt` file:
 ```bash
 pip install -r requirements.txt
 
-## ⚙️ Configuration
 
-Set up `config.yaml` like this:
 
-```yaml
-data_directory: "./data/HPPCs"
-batch_prefix: "Batch"
-file_prefix: "Cleaned_"
-batch_range: [19, 50]
-max_files_per_batch: 1
-max_total_files: 10
-
-current_col: "I"
-voltage_col: "U"
-target_col: "Smoothed_Resistance"
-predictor_cols: ["Temp_Cell", "U"]
-
-smoothing_window: 50
-segment: [1000, 2000]
-
-granger_max_lag: 6
-te_lag: 1
-te_bins: 10
-
-visualize: true
-
-## Run the script as follows:
+## 🧾 Run the script as follows:
 python granger_causality.py --config config.yaml
