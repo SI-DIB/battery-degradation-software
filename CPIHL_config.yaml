@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr  2 02:38:57 2025
+
+@author: saharqaadan
+"""
+
+# Configuration file for cpihl.py (Causality-informed PINN Hybrid Learning)
+
+# Data input settings
+data_directory: "./data/HPPCs"
+batch_prefix: "Batch"
+file_prefix: "Cleaned_"
+batch_range: [19, 50]
+max_files_per_batch: 1
+
+# Feature and target columns
+feature_cols:
+  - ClimaTemp
+  - I
+  - Itarget
+  - P
+  - Q
+  - Qneg
+  - Qpos
+  - Temp_Cell
+target_col: U
+
+# PINN architecture
+pinn_layers: [128, 128, 128]
+learning_rate: 0.001
+epochs: 50
+batch_size: 32
+validation_split: 0.2
+
+# Physics-informed loss settings
+physics_lambda: 0.01
+physics_temp_col: Temp_Cell
+physics_age_col: Q
+
+# Optional settings
+model_comparison: true
+visualize: true
