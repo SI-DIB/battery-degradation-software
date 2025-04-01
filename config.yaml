@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr  1 21:26:29 2025
+
+@author: saharqaadan
+"""
+
+# Configuration for Granger Causality and Transfer Entropy Analysis
+
+data_directory: "./data/HPPCs"         # Root folder containing batch folders
+batch_prefix: "Batch"                  # Folder prefix (e.g., Batch1, Batch2, ...)
+file_prefix: "Cleaned_"                # Prefix for data files to include
+batch_range: [19, 50]                  # Range of batch folders
+max_files_per_batch: 1                # Number of files to pick per batch
+max_total_files: 10                   # Maximum number of files overall
+
+current_col: "I"                       # Column name for current
+voltage_col: "U"                       # Column name for voltage
+target_col: "Smoothed_Resistance"     # Target variable for causality
+predictor_cols: ["Temp_Cell", "U"]    # List of predictors to test
+
+smoothing_window: 50                  # Rolling window size for resistance smoothing
+segment: [1000, 2000]                 # Data segment (start index, end index)
+
+granger_max_lag: 6                    # Max lag for Granger causality
+te_lag: 1                             # Lag for Transfer Entropy
+te_bins: 10                           # Binning for entropy calc
+
+visualize: true                       # Whether to plot the results
