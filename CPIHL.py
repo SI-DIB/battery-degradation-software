@@ -123,7 +123,7 @@ def run_pipeline(config):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run PINN hybrid model")
-    parser.add_argument("--config", type=str, default="config/pinn_config.yaml", help="Path to configuration YAML file")
+    parser.add_argument("--config", type=str, default="config/cpihl_config.yaml", help="Path to configuration YAML file")
     args = parser.parse_args()
 
     config = load_config(args.config)
