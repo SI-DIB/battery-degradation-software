@@ -29,7 +29,7 @@ pip install -r requirements.txt
 python granger_causality.py --config config.yaml
 
 ---
-### 🧠 CPIHL – Causality-informed PINN Hybrid Learning
+## 🧠 CPIHL – Causality-informed PINN Hybrid Learning
 
 This module implements a hybrid deep learning framework for predicting battery voltage using a **Physics-Informed Neural Network (PINN)** enhanced by traditional machine learning regressors.
 
@@ -40,8 +40,9 @@ It is based on the methodology presented in the accepted IEEE paper:
 
 **Filename**: `cpihl.py`  
 **Configuration file**: `config/cpihl_config.yaml`
+---
 
-#### ⚙️ Configuration Parameters (`cpihl_config.yaml`)
+### ⚙️ Configuration Parameters (`cpihl_config.yaml`)
 
 ```yaml
 data_directory: "./data/HPPCs"
