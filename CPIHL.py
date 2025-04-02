@@ -7,6 +7,10 @@ Date: 2025-04-01
 IEEE Xplore Link
 https://ieeexplore.ieee.org/document/10945873
 
+##run
+python cpihl.py --config config/cpihl_config.yaml
+
+
 This script implements a hybrid PINN model combined with machine learning (Random Forest) to predict battery voltage. It includes configurable parameters, physics-informed loss, and baseline model comparisons.
 """
 
