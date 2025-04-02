@@ -23,3 +23,6 @@ Install dependencies from the `requirements.txt` file:
 ```bash
 pip install -r requirements.txt
 
+For questions or collaboration inquiries, please reach out to:
+
+Prof. Dr. Sahar Qaadan – sahar.qadan@gju.edu.jo
