@@ -3,6 +3,10 @@ Physics-Informed Neural Network Hybrid Model for Battery Voltage Prediction
 Author: Sahar Qaadan
 Date: 2025-04-01
 
+"Causality-informed PINN Hybrid Learning for Lithium-Ion Battery Voltage Prediction"
+IEEE Xplore Link
+https://ieeexplore.ieee.org/document/10945873
+
 This script implements a hybrid PINN model combined with machine learning (Random Forest) to predict battery voltage. It includes configurable parameters, physics-informed loss, and baseline model comparisons.
 """
 
