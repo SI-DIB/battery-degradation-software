@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+⚙️ Configuration
+Edit config/granger_causality_config.yaml
+
+##run
+python granger_causality.py --config config/granger_causality_config.yaml
 
 """
 Granger Causality and Transfer Entropy Analysis for Battery Data
