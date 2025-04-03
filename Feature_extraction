@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Battery Feature Extraction Script
+
+Author: Sahar Qaadan
+Date: 2024-09-03
+"""
+
+import os
+import argparse
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+def engineer_features(data):
+    data = data.copy()
+    
+    # Ensure 'Time' is in datetime format
+    data['Time'] = pd.to_datetime(data['Time'], errors='coerce')
+    
+    # Basic cycle tracking
+    data['Cumulative_Cycles'] = np.arange(1, len(data) + 1)
+    
+    # Voltage statistics
+    data['Avg_Voltage'] = data['U'].expanding().mean()
+    data['Rolling_Avg_Voltage'] = data['U'].rolling(window=5).mean()
+    data['Std_Dev_Voltage'] = data['U'].expanding().std()
+    data['Max_Voltage'] = data['U'].expanding().max()
+    data['Min_Voltage'] = data['U'].expanding().min()
+
+    # Capacity degradation
+    data['Capacity_Fade_Rate'] = data['Q'].expanding().mean() / data['Cumulative_Cycles']
+
+    # Thermal metrics
+    data['Avg_Temperature'] = data['Temp_Cell'].expanding().mean()
+    data['Temp_Variation'] = data['Temp_Cell'].expanding().max() - data['Temp_Cell'].expanding().min()
+    data['High_Temp_Flag'] = (data['Temp_Cell'] > 40).astype(int)
+
+    # Electrical resistance & impedance
+    data['Internal_Resistance'] = data['U'] / (data['I'] + 1e-9)
+    data['Dynamic_Resistance'] = data['U'].diff() / (data['I'].diff() + 1e-9)
+    data['Impedance'] = (data['U'].shift(1) - data['U']) / (data['I'] + 1e-9)
+
+    # Energy and power indicators
+    data['Power_Consumption_Rate'] = data['P'].expanding().mean()
+    data['Energy_Efficiency'] = data['Qpos'] / (data['Qneg'] + 1e-9)
+    data['Temp_Coefficient'] = data['P'].diff() / (data['Temp_Cell'].diff() + 1e-9)
+
+    # Thermal risk and energy throughput
+    data['Thermal_Runaway_Risk'] = np.where((data['Temp_Cell'] > 40) & (data['P'].diff().abs() > 0.1), 1, 0)
+    data['Effective_Capacity'] = data['Q'].cumsum() - data['Qneg'].cumsum()
+    data['Energy_Throughput'] = (data['P'] * data['Time'].diff().fillna(pd.Timedelta(0)).dt.total_seconds()).cumsum()
+
+    return data.dropna().reset_index(drop=True)
+
+def process_samples(batch_directory, n_samples=10):
+    csv_files = []
+
+    for batch_num in range(19, 51):
+        batch_path = os.path.join(batch_directory, f'Batch{batch_num}')
+        if os.path.isdir(batch_path):
+            for file in os.listdir(batch_path):
+                if file.endswith('.csv') and file.startswith('Cleaned_'):
+                    csv_files.append(os.path.join(batch_path, file))
+
+    if len(csv_files) == 0:
+        print("No CSV files found in the specified directory.")
+        return
+
+    sampled_files = random.sample(csv_files, min(n_samples, len(csv_files)))
+
+    for file_path in sampled_files:
+        print(f"Processing file: {file_path}")
+        df = pd.read_csv(file_path)
+        df_features = engineer_features(df)
+
+        fig, axs = plt.subplots(2, 1, figsize=(14, 12))
+
+        # Original features
+        axs[0].plot(df['Time'], df['U'], label='Voltage (U)')
+        axs[0].plot(df['Time'], df['I'], label='Current (I)')
+        axs[0].plot(df['Time'], df['Temp_Cell'], label='Temp_Cell')
+        axs[0].plot(df['Time'], df['P'], label='Power (P)')
+        axs[0].plot(df['Time'], df['Q'], label='Charge (Q)')
+        axs[0].set_title('Original Features Over Time')
+        axs[0].legend(loc='upper right')
+
+        # Engineered features
+        axs[1].plot(df_features['Time'], df_features['Avg_Voltage'], label='Avg Voltage')
+        axs[1].plot(df_features['Time'], df_features['Internal_Resistance'], label='Internal Resistance')
+        axs[1].plot(df_features['Time'], df_features['Energy_Throughput'], label='Energy Throughput')
+        axs[1].plot(df_features['Time'], df_features['Capacity_Fade_Rate'], label='Capacity Fade Rate')
+        axs[1].plot(df_features['Time'], df_features['Thermal_Runaway_Risk'], label='Thermal Risk')
+        axs[1].set_title('Engineered Features Over Time')
+        axs[1].legend(loc='upper right')
+
+        plt.tight_layout()
+        plt.show()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Battery Feature Engineering Tool")
+    parser.add_argument('--dir', type=str, required=True, help="Path to HPPC batches directory")
+    parser.add_argument('--samples', type=int, default=10, help="Number of sample files to process")
+    args = parser.parse_args()
+
+    process_samples(args.dir, args.samples)
